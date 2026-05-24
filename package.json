@@ -5,10 +5,14 @@
   "packageManager": "pnpm@10.28.1",
   "scripts": {
     "build": "nuxt build",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx server/db/seed.ts",
+    "db:studio": "drizzle-kit studio",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxi typecheck"
   },
   "devDependencies": {
     "@orpc/client": "next",
@@ -18,9 +22,21 @@
     "@orpc/tanstack-query": "next",
     "@orpc/zod": "next",
     "@tanstack/vue-query": "^5.92.9",
+    "@types/node": "^25.9.1",
+    "drizzle-kit": "^0.31.10",
     "nuxt": "^4.4.2",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
     "vue": "latest",
     "vue-router": "latest",
+    "vue-tsc": "^3.3.1",
     "zod": "^4.3.6"
+  },
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.11",
+    "better-auth": "^1.6.11",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "postgres": "^3.4.9"
   }
 }

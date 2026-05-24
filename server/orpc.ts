@@ -4,6 +4,7 @@ import { ORPCError, os } from '@orpc/server'
 import { dbProviderMiddleware } from './middlewares/db'
 
 export interface ORPCContext {
+  headers?: Headers
   user?: z.infer<typeof UserSchema>
 }
 

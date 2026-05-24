@@ -1,6 +1,7 @@
 import { onError } from '@orpc/server'
 import { RPCHandler } from '@orpc/server/fetch'
 import { BatchHandlerPlugin } from '@orpc/server/plugins'
+import { getDefaultPlaygroundUser, getUserFromRequest } from '../../auth-context'
 import { router } from '../../routers'
 
 const rpcHandler = new RPCHandler(router, {
@@ -17,11 +18,11 @@ const rpcHandler = new RPCHandler(router, {
 export default defineEventHandler(async (event) => {
   const request = toWebRequest(event)
 
-  const context = { user: { id: 'test', name: 'John Doe', email: 'john@doe.com' } }
+  const user = await getUserFromRequest(request.headers) ?? await getDefaultPlaygroundUser()
 
   const { response } = await rpcHandler.handle(request, {
     prefix: '/rpc',
-    context,
+    context: { headers: request.headers, user },
   })
 
   if (response) {

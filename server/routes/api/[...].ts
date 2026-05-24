@@ -4,9 +4,10 @@ import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4'
 import { SmartCoercionPlugin } from '@orpc/json-schema'
 import { router } from '../../routers'
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins'
-import { NewUserSchema, UserSchema } from '../../schemas/user'
-import { CredentialSchema, TokenSchema } from '../../schemas/auth'
+import { UserSchema } from '../../schemas/user'
 import { NewPlanetSchema, PlanetSchema, UpdatePlanetSchema } from '../../schemas/planet'
+import { getUserFromRequest } from '../../auth-context'
+import { getPublicAuthOpenAPI } from '../../openapi/auth'
 
 const openAPIHandler = new OpenAPIHandler(router, {
   interceptors: [
@@ -24,36 +25,43 @@ const openAPIHandler = new OpenAPIHandler(router, {
       schemaConverters: [
         new ZodToJsonSchemaConverter(),
       ],
-      specGenerateOptions: {
-        info: {
-          title: 'ORPC Playground',
-          version: '1.0.0',
-        },
-        commonSchemas: {
-          NewUser: { schema: NewUserSchema },
-          User: { schema: UserSchema },
-          Credential: { schema: CredentialSchema },
-          Token: { schema: TokenSchema },
-          NewPlanet: { schema: NewPlanetSchema },
-          UpdatePlanet: { schema: UpdatePlanetSchema },
-          Planet: { schema: PlanetSchema },
-          UndefinedError: { error: 'UndefinedError' },
-        },
-        security: [{ bearerAuth: [] }],
-        components: {
-          securitySchemes: {
-            bearerAuth: {
-              type: 'http',
-              scheme: 'bearer',
+      async specGenerateOptions() {
+        const authOpenAPI = await getPublicAuthOpenAPI()
+
+        return {
+          info: {
+            title: 'ORPC Playground',
+            version: '1.0.0',
+          },
+          commonSchemas: {
+            User: { schema: UserSchema },
+            NewPlanet: { schema: NewPlanetSchema },
+            UpdatePlanet: { schema: UpdatePlanetSchema },
+            Planet: { schema: PlanetSchema },
+            UndefinedError: { error: 'UndefinedError' },
+          },
+          security: [{ bearerAuth: [] }],
+          paths: authOpenAPI.paths,
+          components: {
+            schemas: authOpenAPI.components.schemas,
+            securitySchemes: {
+              bearerAuth: {
+                type: 'http',
+                scheme: 'bearer',
+              },
+              ...authOpenAPI.components.securitySchemes,
             },
           },
-        },
+        }
       },
       docsConfig: {
         authentication: {
           securitySchemes: {
             bearerAuth: {
               token: 'default-token',
+            },
+            betterAuthCookie: {
+              value: 'better-auth.session_token=...',
             },
           },
         },
@@ -65,14 +73,14 @@ const openAPIHandler = new OpenAPIHandler(router, {
 export default defineEventHandler(async (event) => {
   const request = toWebRequest(event)
 
-  const authorization = getHeader(event, 'authorization')
-  const context = authorization
-    ? { user: { id: 'test', name: 'John Doe', email: 'john@doe.com' } }
-    : {}
+  const user = await getUserFromRequest(request.headers)
 
   const { response } = await openAPIHandler.handle(request, {
     prefix: '/api',
-    context,
+    context: {
+      headers: request.headers,
+      ...(user ? { user } : {}),
+    },
   })
 
   if (response) {
