@@ -33,12 +33,18 @@ importers:
       '@orpc/client':
         specifier: next
         version: 0.0.0-next.de2bec7
+      '@orpc/contract':
+        specifier: next
+        version: 0.0.0-next.de2bec7
       '@orpc/json-schema':
         specifier: next
         version: 0.0.0-next.de2bec7(crossws@0.4.5(srvx@0.11.16))(ws@8.21.0)
       '@orpc/openapi':
         specifier: next
         version: 0.0.0-next.de2bec7(crossws@0.4.5(srvx@0.11.16))(ws@8.21.0)
+      '@orpc/openapi-client':
+        specifier: next
+        version: 0.0.0-next.de2bec7
       '@orpc/server':
         specifier: next
         version: 0.0.0-next.de2bec7(crossws@0.4.5(srvx@0.11.16))(ws@8.21.0)

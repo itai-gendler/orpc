@@ -5,8 +5,12 @@ const { $orpc } = useNuxtApp()
 
 const query = useQuery($orpc.sse.experimental_streamedOptions({
   queryFnOptions: { maxChunks: 3 },
-  enabled: import.meta.client,
+  enabled: false,
 }))
+
+onMounted(() => {
+  void query.refetch()
+})
 </script>
 
 <template>

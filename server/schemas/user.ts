@@ -1,13 +1,8 @@
 import { JSON_SCHEMA_REGISTRY } from '@orpc/zod/zod4'
-import * as z from 'zod'
+import { UserSchema } from '#shared/schemas/user'
 
-export type User = z.infer<typeof UserSchema>
-
-export const UserSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.email(),
-})
+export type { User } from '#shared/schemas/user'
+export { UserSchema } from '#shared/schemas/user'
 
 JSON_SCHEMA_REGISTRY.add(UserSchema, {
   examples: [
