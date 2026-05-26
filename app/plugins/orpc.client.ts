@@ -1,26 +1,17 @@
-import type { RouterClient } from '@orpc/server'
-import type { router } from '../../server/routers'
+import type { ContractRouterClient } from '@orpc/contract'
+import type { JsonifiedClient } from '@orpc/openapi-client'
 import { createORPCClient } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
+import { OpenAPILink } from '@orpc/openapi-client/fetch'
 import { createTanstackQueryUtils } from '@orpc/tanstack-query'
-import { BatchLinkPlugin } from '@orpc/client/plugins'
+import { orpcContract } from '#shared/orpc-contract'
 
 export default defineNuxtPlugin(() => {
-  const link = new RPCLink({
-    url: `${window.location.origin}/rpc`,
+  const link = new OpenAPILink(orpcContract, {
+    url: `${window.location.origin}/api`,
     headers: () => ({}),
-    plugins: [
-      new BatchLinkPlugin({
-        exclude: ({ path }) => path[0] === 'sse',
-        groups: [{
-          condition: () => true,
-          context: {},
-        }],
-      }),
-    ],
   })
 
-  const client: RouterClient<typeof router> = createORPCClient(link)
+  const client = createORPCClient<JsonifiedClient<ContractRouterClient<typeof orpcContract>>>(link)
 
   const orpc = createTanstackQueryUtils(client)
 
