@@ -4,7 +4,7 @@ import { auth } from './auth'
 import { db } from './db/client'
 import { sessions, users } from './db/schema'
 
-export const defaultPlaygroundUser: User = {
+const defaultPlaygroundUser: User = {
   id: 'default-playground-user',
   name: 'John Doe',
   email: 'john@doe.com',
@@ -64,18 +64,4 @@ export async function getUserFromRequest(headers: Headers): Promise<User | undef
   }
 
   return getUserFromAuthorization(headers.get('authorization'))
-}
-
-export async function getDefaultPlaygroundUser(): Promise<User> {
-  const [user] = await db
-    .select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-    })
-    .from(users)
-    .where(eq(users.email, defaultPlaygroundUser.email))
-    .limit(1)
-
-  return user ? toUser(user) : defaultPlaygroundUser
 }

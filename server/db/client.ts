@@ -9,7 +9,7 @@ const globalForDatabase = globalThis as typeof globalThis & {
   __orpcPostgresClient?: postgres.Sql
 }
 
-export const databaseClient = globalForDatabase.__orpcPostgresClient ?? postgres(databaseUrl, {
+const databaseClient = globalForDatabase.__orpcPostgresClient ?? postgres(databaseUrl, {
   max: 10,
 })
 

@@ -66,7 +66,7 @@ function selectPlanetWithCreator() {
     .innerJoin(users, eq(planets.creatorId, users.id))
 }
 
-export function createDrizzleDB(): DB {
+function createDrizzleDB(): DB {
   return {
     planets: {
       find: async (id) => {
