@@ -1,6 +1,7 @@
 import type { z } from 'zod'
 import type { UserSchema } from './schemas/user'
-import { ORPCError, os } from '@orpc/server'
+import { implement, ORPCError } from '@orpc/server'
+import { orpcContract } from '#shared/orpc-contract'
 import { dbProviderMiddleware } from './middlewares/db'
 
 export interface ORPCContext {
@@ -8,8 +9,10 @@ export interface ORPCContext {
   user?: z.infer<typeof UserSchema>
 }
 
-export const pub = os
+export const orpc = implement(orpcContract)
   .$context<ORPCContext>()
+
+export const pub = orpc
   .use(dbProviderMiddleware)
 
 export const authed = pub.use(({ context, next }) => {

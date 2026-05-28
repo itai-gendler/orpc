@@ -1,16 +1,9 @@
-import { eventIterator, os } from '@orpc/server'
-import * as z from 'zod'
+import { pub } from '../orpc'
 
 const MAX_EVENTS = 5
 
-export const sse = os
-  .route({
-    method: 'GET',
-    path: '/sse',
-    tags: ['SSE'],
-    summary: 'Server-Sent Events',
-  })
-  .output(eventIterator(z.object({ time: z.date() })))
+export const sse = pub
+  .sse
   .handler(async function* () {
     let count = 0
 
