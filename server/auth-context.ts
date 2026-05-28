@@ -30,7 +30,17 @@ async function getUserFromAuthorization(authorization?: string | null): Promise<
   }
 
   if (token === 'default-token') {
-    return defaultPlaygroundUser
+    const [row] = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+      })
+      .from(users)
+      .where(eq(users.email, defaultPlaygroundUser.email))
+      .limit(1)
+
+    return row ? toUser(row) : defaultPlaygroundUser
   }
 
   const [row] = await db

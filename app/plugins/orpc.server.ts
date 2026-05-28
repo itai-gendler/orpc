@@ -1,13 +1,12 @@
-import { createRouterClient } from '@orpc/server'
-import { router } from '../../server/routers'
+import type { ContractRouterClient } from '@orpc/contract'
+import type { JsonifiedClient } from '@orpc/openapi-client'
+import { createORPCClient } from '@orpc/client'
+import { OpenAPILink } from '@orpc/openapi-client/fetch'
 import { createTanstackQueryUtils } from '@orpc/tanstack-query'
+import { orpcContract } from '#shared/orpc-contract'
 
-/**
- * This is part of the Optimize SSR setup.
- *
- * @see {@link https://orpc.dev/docs/adapters/nuxt#optimize-ssr}
- */
-export default defineNuxtPlugin((nuxt) => {
+export default defineNuxtPlugin(() => {
+  const requestURL = useRequestURL()
   const requestHeaders = useRequestHeaders()
   const headers = new Headers()
 
@@ -17,11 +16,12 @@ export default defineNuxtPlugin((nuxt) => {
     }
   }
 
-  const client = createRouterClient(router, {
-    context: {
-      headers,
-    },
+  const link = new OpenAPILink(orpcContract, {
+    url: `${requestURL.origin}/api`,
+    headers: () => headers,
   })
+
+  const client = createORPCClient<JsonifiedClient<ContractRouterClient<typeof orpcContract>>>(link)
 
   const orpc = createTanstackQueryUtils(client)
 
