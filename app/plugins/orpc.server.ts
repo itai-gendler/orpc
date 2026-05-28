@@ -5,6 +5,20 @@ import { OpenAPILink } from '@orpc/openapi-client/fetch'
 import { createTanstackQueryUtils } from '@orpc/tanstack-query'
 import { orpcContract } from '#shared/orpc-contract'
 
+// To test the UI over RPC instead of REST, replace the OpenAPILink/client block
+// below with:
+//
+// import type { RouterClient } from '@orpc/server'
+// import type { router } from '../../server/routers'
+// import { RPCLink } from '@orpc/client/fetch'
+//
+// const link = new RPCLink({
+//   url: `${requestURL.origin}/rpc`,
+//   headers: () => headers,
+// })
+//
+// const client: RouterClient<typeof router> = createORPCClient(link)
+
 export default defineNuxtPlugin(() => {
   const requestURL = useRequestURL()
   const requestHeaders = useRequestHeaders()
