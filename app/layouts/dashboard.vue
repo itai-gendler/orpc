@@ -24,6 +24,13 @@ const links = [[{
     open.value = false
   },
 }, {
+  label: 'Market trends',
+  icon: 'i-lucide-trending-up',
+  to: '/dashboard/market-trends',
+  onSelect: () => {
+    open.value = false
+  },
+}, {
   label: 'Stream',
   icon: 'i-lucide-radio',
   to: '/dashboard/stream',

@@ -69,3 +69,22 @@ password enabled. Better Auth is mounted at `/api/auth/*` and stores users,
 sessions, accounts, and verification records in the same Postgres database.
 The `/api` reference page serves a single OpenAPI document that includes the
 oRPC API plus the supported Better Auth email/password endpoints.
+
+## Market Trends
+
+read_when: changing market trend indexes, Trigger.dev scheduling, or the market
+trend API.
+
+The dashboard includes `/dashboard/market-trends`, backed by the
+`/api/market-trends` oRPC endpoint and the `market_trend_indexes` table.
+Run `pnpm db:push` after pulling this schema.
+
+Market data can be refreshed manually from the dashboard, or periodically with
+Trigger.dev:
+
+```bash
+pnpm dev:trigger
+```
+
+Set `TRIGGER_PROJECT_REF`, `TRIGGER_SECRET_KEY`, and optionally
+`MARKET_TRENDS_CRON` in `.env`. The default cron is every 15 minutes.

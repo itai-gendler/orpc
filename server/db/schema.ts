@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, doublePrecision, integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
@@ -54,6 +54,30 @@ export const planets = pgTable('planets', {
   description: text('description'),
   imageUrl: text('image_url'),
   creatorId: text('creator_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export const marketTrendIndexes = pgTable('market_trend_indexes', {
+  id: serial('id').primaryKey(),
+  displayOrder: integer('display_order').notNull(),
+  symbol: text('symbol').notNull().unique(),
+  providerSymbol: text('provider_symbol').notNull(),
+  name: text('name').notNull(),
+  region: text('region').notNull(),
+  currency: text('currency').notNull(),
+  price: doublePrecision('price').notNull(),
+  change: doublePrecision('change').notNull(),
+  changePercent: doublePrecision('change_percent').notNull(),
+  previousClose: doublePrecision('previous_close').notNull(),
+  open: doublePrecision('open'),
+  dayHigh: doublePrecision('day_high'),
+  dayLow: doublePrecision('day_low'),
+  volume: doublePrecision('volume'),
+  marketTime: timestamp('market_time', { withTimezone: true }).notNull(),
+  fetchedAt: timestamp('fetched_at', { withTimezone: true }).notNull(),
+  source: text('source').notNull(),
+  sourceUrl: text('source_url').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })

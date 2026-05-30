@@ -65,6 +65,12 @@ const withImages = computed(() => planets.value.filter(planet => planet.imageUrl
           icon="i-lucide-radio"
           to="/dashboard/stream"
         />
+        <UPageCard
+          title="Market trends"
+          description="Track the latest major market index snapshots."
+          icon="i-lucide-trending-up"
+          to="/dashboard/market-trends"
+        />
       </UPageGrid>
 
       <UPageCard title="Recent planets" variant="subtle">

@@ -1,11 +1,17 @@
+import type { MarketTrendIndex, MarketTrendRefreshResult } from '../schemas/market-trend'
 import type { NewPlanet, Planet, UpdatePlanet } from '../schemas/planet'
 import type { User } from '../schemas/user'
 import { asc, eq, gt } from 'drizzle-orm'
 import { os } from '@orpc/server'
 import { db } from '../db/client'
 import { planets, users } from '../db/schema'
+import { listMarketTrendIndexes, refreshMarketTrends } from '../services/market-trends'
 
 export interface DB {
+  marketTrends: {
+    list: () => Promise<MarketTrendIndex[]>
+    refresh: () => Promise<MarketTrendRefreshResult>
+  }
   planets: {
     find: (id: number) => Promise<Planet | undefined>
     list: (limit: number, cursor: number) => Promise<Planet[]>
@@ -68,6 +74,10 @@ function selectPlanetWithCreator() {
 
 function createDrizzleDB(): DB {
   return {
+    marketTrends: {
+      list: listMarketTrendIndexes,
+      refresh: refreshMarketTrends,
+    },
     planets: {
       find: async (id) => {
         const [row] = await selectPlanetWithCreator()
